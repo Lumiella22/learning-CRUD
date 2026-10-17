@@ -18,6 +18,37 @@ app.get("/produk", (req, res) =>{
     res.status(200).json(produk);
 });
 
+app.post("/produk", (req, res) =>{
+    // Validasi nama
+    if(typeof req.body.nama !== "string" || req.body.nama.trim() === ""){
+        return res.status(400).json({
+           pesan: "Nama produk perlu berupa string!" 
+        });
+    }
+
+    // Validasi harga
+    if(typeof req.body.harga !== "number" || req.body.harga < 0 || !Number.isFinite(req.body.harga)){
+        return res.status(400).json({
+            pesan : "Harga produk tidak boleh negatif!"
+        });
+    }
+    
+    // Membuat produk baru
+    const produkBaru = {
+        id : produk.length +1,
+        nama : req.body.nama,
+        harga : req.body.harga
+    };
+
+    // Input produk baru
+    produk.push(produkBaru);
+    return res.status(201).json({
+        pesan: "Data berhasil ditambahkan.",
+        data : produkBaru
+    });
+    
+});
+
 app.listen(PORT, () =>{
     console.log(`Program berjalan pada http://localhost:${PORT}`);
 });
