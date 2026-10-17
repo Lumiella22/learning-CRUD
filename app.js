@@ -65,6 +65,41 @@ app.delete("/produk/:id", (req, res) =>{
             pesan: "Produk dengan ID tersebut tidak ditemukan."
         });
     }
+}); 
+
+app.put("/produk/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const produkDitemukan = produk.find((item) => item.id === id);
+
+    // Validasi apakah produk ditemukan
+    if (!produkDitemukan) {
+        return res.status(404).json({
+            pesan: "Produk dengan ID tersebut tidak ditemukan."
+        });
+    }
+
+    // Validasi nama
+    if (typeof req.body.nama !== "string" || req.body.nama.trim() === "") {
+        return res.status(400).json({
+            pesan: "Nama produk wajib diisi dan tidak boleh kosong."
+        });
+    }
+
+    // Validasi harga
+    if (typeof req.body.harga !== "number" || !Number.isFinite(req.body.harga) ||req.body.harga < 0){
+        return res.status(400).json({
+            pesan: "Harga harus berupa angka yang valid dan tidak negatif."
+        });
+    }
+
+    // Perubahan produk setelah semua validasi lolos
+    produkDitemukan.nama = req.body.nama.trim();
+    produkDitemukan.harga = req.body.harga;
+
+    return res.status(200).json({
+        pesan: "Produk berhasil diperbarui.",
+        data: produkDitemukan
+    });
 });
 
 app.listen(PORT, () =>{
