@@ -49,6 +49,24 @@ app.post("/produk", (req, res) =>{
     
 });
 
+app.delete("/produk/:id", (req, res) =>{
+    const id = Number(req.params.id);
+    const indeks = produk.findIndex((item) => item.id === id);
+
+    if(indeks !== -1){
+        const produkDihapus = produk.splice(indeks, 1);
+
+        res.status(200).json({
+            pesan: "Produk berhasil dihapus",
+            data: produkDihapus[0]
+        });
+    }else{
+        res.status(404).json({
+            pesan: "Produk dengan ID tersebut tidak ditemukan."
+        });
+    }
+});
+
 app.listen(PORT, () =>{
     console.log(`Program berjalan pada http://localhost:${PORT}`);
 });
